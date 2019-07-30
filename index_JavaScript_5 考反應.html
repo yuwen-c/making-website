@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>考反應</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style type="text/css">
+        body {
+            background-color: rgba(80, 70, 80, 0.3);
+            color: #3B240B;
+        }
+
+        :root{
+            --bound;
+        }
+        #fig {
+            width: var(--bound);
+            height: var(--bound);
+            background-color: brown;
+            border-radius: var(--bound/2);
+            display: none;
+
+        }
+
+        .divClass {
+            font-weight: 800;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <h3>考反應</h3>
+
+    <div class="divClass">反應時間：<span id="second"></span>秒</div>
+
+    <p id="fig"></p>
+
+
+
+</body>
+
+<script type="text/javascript">
+    //use CSS variable to set the size of the figure.
+    //the size depends on the browser size.
+    var pxFig;
+    if(window.innerWidth>window.innerHeight){
+        pxFig=window.innerWidth/8;
+    }
+    else{
+        pxFig=window.innerHeight/8;
+    }
+    //assign JS variable to CSS variable  
+    pxFig=document.documentElement.style.setProperty("--bound",pxFig+"px");
+    
+    
+    //set random color
+    function showColor() {
+        var ranColor = Math.floor(Math.random() * 101);
+        //如果是前面用亂數取0~10, 是*11, 再floor
+        //所以50~200->*(200-150+1)+50=101
+        //set r=255, g=random from 50~200, b=100
+        var newColor = "rgba(255," + ranColor + ",100,0.5)";
+        console.log(newColor);
+        return newColor;
+    }
+    //set random position
+
+
+    //set random time
+    var x = Math.random() * 2000;
+    //begin->show; after->click    
+    var timeBegin = 0;
+    var timeAfter = 0;
+
+    // click and show again
+    function jumpFig() {
+        //show again but with a time interval
+        setTimeout(function() {
+            //change figure
+            if (Math.random() > 0.5) {
+                document.getElementById("fig").style.borderRadius = "75px";
+            } else {
+                document.getElementById("fig").style.borderRadius = "0px";
+            }
+            //display: none->block
+            document.getElementById("fig").style.display = "block";
+            document.getElementById("fig").style.backgroundColor = showColor(); //change color function
+            var top = Math.random()*(window.innerHeight-300);
+            var left = Math.random()*(window.innerWidth-150);
+            document.getElementById("fig").style.marginTop = top + "px";
+            document.getElementById("fig").style.marginLeft = left + "px";
+            timeBegin = Date.now(); //time record
+        }, x); // x-> random time
+
+    }
+    // show the fig when load
+    jumpFig();
+    // click the fig
+    document.getElementById("fig").onclick = function() {
+        timeAfter = Date.now(); //time record
+        this.style.display = "none";
+        document.getElementById("second").innerHTML = (timeAfter - timeBegin) / 1000; //show the reaction time in div
+        jumpFig(); //show again function
+    }
+
+</script>
+
+
+
+</html>
