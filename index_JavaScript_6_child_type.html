@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>nth-child</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style type="text/css">
+        /* p元素下的第n個孩子
+        p:nth-child(2){
+            background-color: cadetblue;
+        }
+              
+        p:first-child{
+            color: chartreuse;
+        }
+        
+        p:last-child{
+            background-color: crimson;
+        }
+        
+        p:nth-last-child(2){
+            color: aquamarine;
+        }*/
+        /* odd/ even */
+
+/*=======================================*/
+
+/*
+p:nth-of-type: 只計算<p>
+p:nth-child: <p>以下的每個都列入計算
+*/
+        
+        
+        /*
+        p:nth-of-type(odd) {
+            background-color: blueviolet;
+            color: crimson;
+        }
+*/
+
+
+
+        p:nth-child(odd) {
+            background-color: blueviolet;
+            color: crimson;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <p>第一行</p>
+    <hr>
+    <p>第二行</p>
+    <hr>
+    <p>第三行</p>
+    <hr>
+    <p>第四行</p>
+    <hr>
+    <p>第五行</p>
+    <hr>
+    <p>第六行</p>
+
+</body>
+
+</html>
