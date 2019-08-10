@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>mouse tracking</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style type="text/css">
+        /*
+       *從JS獲得滑鼠位移後，要告訴CSS，所以需要有CSS變量來接收。*/
+        :root {
+            --radius: 100px;
+            --mouseX;
+            --mouseY;
+            --scale: 1;
+            /*控制halo大小 (老師用--factor:1*/
+            --speed;
+            /*另外有滑鼠的速度變因 (老師用--scale不設值，要用JS計算結果*/
+        }
+
+        body {
+            background-color: #000000;
+        }
+
+        /*
+       *滑鼠在滑鼠在瀏覽器裡的座標-固定座標
+       *相對座標，該物體的邊邊到瀏覽器頂端頂端或左邊的距離
+       */
+        #ball {
+            width: var(--radius);
+            height: var(--radius);
+            border-radius: 50%;
+            background-color: aqua;
+            position: absolute;
+
+            /*設定滑鼠座標 法二*/
+            /*
+            transform: translate(calc(var(--mouseX)*1px - var(--radius) / 2),calc(var(--mouseY)*1px - var(--radius) / 2));
+            */
+            /*
+                    滑鼠跟球會有一段固定落差 利用calc()方法扣除圓形半徑
+            */
+
+            top: calc(var(--mouseY) - var(--radius) / 2);
+            left: calc(var(--mouseX) - var(--radius) / 2);
+
+        }
+
+        .halo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            /*            background-color:blueviolet;*/
+            position: absolute;
+            opacity: 1;
+            transform: scale(calc(var(--scale) * var(--speed)));
+        }
+
+        /*三個光環不同大小 設定--scale*/
+        .halo:nth-of-type(1) {
+            color: red;
+            background-color: chocolate;
+            --scale: 0.3;
+        }
+
+        .halo:nth-of-type(2) {
+            color: blue;
+            background-color: chocolate;
+            --scale: 0.5;
+        }
+
+        .halo:nth-of-type(3) {
+            color: yellow;
+            background-color: chocolate;
+            --scale: 0.9;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="ball">
+        <!--       三層halo是疊在一起的 第三行疊在最上面-->
+        <div class="halo">333</div>
+        <div class="halo">222</div>
+        <div class="halo">111</div>
+    </div>
+
+    <script>
+        //滑鼠的速度 影響halo光暈大小 越快越大
+        //我們可以說，在每次畫面重繪的時間差裡，滑鼠移動的距離越長，表示速度越快
+        var velocityX = 0;
+        var velocityY = 0;
+
+        //因為要將 滑鼠座標. 球的座標 脫鉤，所以設了兩組變量
+        var mouseX = 0;
+        var mouseY = 0;
+        var ballX = 0;
+        var ballY = 0;
+        //監聽滑鼠 (監聽對象,動作) 取得滑鼠的座標
+        document.addEventListener("mousemove", (what) => {
+            mouseX = what.clientX;
+            mouseY = what.clientY;
+        })
+
+        function setMovement() {
+            //設定 滑鼠 球 兩者的座標距離
+            var distanceX = mouseX - ballX;
+            var distanceY = mouseY - ballY;
+            // 滑鼠與球的距離 設到速率的變數裡
+            //velocityX=distanceX
+            // 球追滑鼠 球會跑過滑鼠跑的距離 然後趕上球
+            //球 可以一次跑到位 也可以一次跑1px, 跑很多次才到
+            //或者是 我們可以設 球 每次跑1/10, 分10次跑到，那麼：
+            // 以上思路其實是錯的! 因為瀏覽器會一直重繪，distance也會跟著改變
+            //所以就算過了10次也跑不到 到最後只會非常接近滑鼠而已 永遠!=滑鼠
+            ballX = ballX + distanceX * 0.1;
+            ballY = ballY + distanceY * 0.1;
+
+
+            //ken的做法
+            //            distanceX=distanceX*0.15;
+            //            ballX=ballX+distanceX;
+            //            
+            //            distanceY=distanceY*0.15;
+            //            ballY=ballY+distanceY;
+
+            //將滑鼠座標mouseX跟Y, 與CSS變量掛鉤      
+            document.documentElement.style.setProperty("--mouseX", ballX + "px");
+            document.documentElement.style.setProperty("--mouseY", ballY + "px");
+
+            document.documentElement.style.setProperty("--speed", (distanceX + distanceY) * 0.01);
+            //設定動畫，用來告訴瀏覽器重繪畫面
+            //寫在function裡面才有用
+            requestAnimationFrame(setMovement);
+        }
+        setMovement();
+    </script>
+</body></html>
